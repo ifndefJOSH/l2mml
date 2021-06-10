@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import (QWidget, QApplication, QComboBox, QDialog,
 QDialogButtonBox, QFormLayout, QGridLayout, QGroupBox, QHBoxLayout,
 QLabel, QLineEdit, QMenu, QMenuBar, QPushButton, QSpinBox, QTextEdit,
-QVBoxLayout, QPlainTextEdit, QPushButton, QMessageBox, QFrame)
+QVBoxLayout, QPlainTextEdit, QPushButton, QMessageBox, QFrame, QCheckBox)
 from PyQt5.QtGui import QIcon, QImage, QPixmap
 #from PyQt5 import 
 from latex2mathml import converter
@@ -100,9 +100,11 @@ class MainDialog(QWidget):
 		self.outputLabel.setFrameShape(QFrame.StyledPanel)
 		layout.addRow(self.outputLabel)
 		# layout.addRow(self.frac, self.sqrt) # , self.sin, self.cos)
+		self.liveUpdate = QCheckBox("Live MathML update")
 		layout.addRow(QLabel("MathML Output:"))
 		self.mathMLBox = QPlainTextEdit(self)
 		layout.addRow(self.mathMLBox)
+		layout.addRow(self.liveUpdate)
 		self.confirm = QPushButton("Convert")
 		self.confirm.setToolTip("Convert LaTeX equation to MathML")
 		self.confirm.clicked.connect(self.confirmOnClick)
@@ -185,6 +187,8 @@ class MainDialog(QWidget):
 		#urlQuery.addQueryItem("tex", str(QUrl.toPercentEncoding(
                          #self.latexBox.toPlainText())))
 		#self.http.connectToHost("mathurl.com")
+		if self.liveUpdate.isChecked():
+			self.confirmOnClick()
 		try:
 			image = QImage()
 			obj = BytesIO();

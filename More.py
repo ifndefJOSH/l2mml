@@ -65,7 +65,7 @@ symbols = {
 class More(QWidget):
 	def __init__(self):
 		super().__init__()
-		self.title = "More Symbols (This dialog does not work yet)"
+		self.title = "More Symbols"
 		self.left = 10
 		self.top = 10
 		self.width = 480
