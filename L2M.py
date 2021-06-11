@@ -1,7 +1,14 @@
-from PyQt5.QtWidgets import (QWidget, QApplication, QComboBox, QDialog,
+'''
+Filename: L2M.py
+
+Author: Josh Jeppson
+
+Description: Main class for l2mm
+'''
+from PyQt5.QtWidgets import (QMainWindow, QWidget, QApplication, QComboBox, QDialog,
 QDialogButtonBox, QFormLayout, QGridLayout, QGroupBox, QHBoxLayout,
 QLabel, QLineEdit, QMenu, QMenuBar, QPushButton, QSpinBox, QTextEdit,
-QVBoxLayout, QPlainTextEdit, QPushButton, QMessageBox, QFrame, QCheckBox)
+QVBoxLayout, QPlainTextEdit, QPushButton, QMessageBox, QFrame, QCheckBox, QStatusBar)
 from PyQt5.QtGui import QIcon, QImage, QPixmap
 #from PyQt5 import 
 from latex2mathml import converter
@@ -19,10 +26,11 @@ import latex2mathml.converter
 
 from More import More
 
-class MainDialog(QWidget):
+class MainWidget(QWidget):
 	
 	def __init__(self):
 		super().__init__()
+		# self.parent = parent
 		self.title = "LaTeX to MathML Converter (GUI)"
 		self.left = 10
 		self.top = 10
@@ -38,7 +46,7 @@ class MainDialog(QWidget):
 		mainLayout = QVBoxLayout()
 		mainLayout.addWidget(self.formGroupBox)
 		self.setLayout(mainLayout)
-		self.setWindowTitle(self.title)
+		# self.setWindowTitle(self.title)
 		self.setGeometry(self.left, self.top, self.width, self.height)
 		self.show()
 		
@@ -123,8 +131,10 @@ class MainDialog(QWidget):
 			mathml = latex2mathml.converter.convert(latex)
 			self.mathMLBox.setPlainText(mathml)
 			print("Done!")
-		except:
+			# parent.statusBar().showMessage("Done Rendering")
+		except Exception as e:
 			print("Some kind of error occurred:")
+			print(e)
 			self.errorBox("Some kind of error occurred", "Please use command line to see full stack trace for debugging")
 			
 	def fracOnClick(self):
@@ -178,6 +188,9 @@ class MainDialog(QWidget):
 		msg.setWindowTitle("Error")
 		msg.exec_()
 		
+	def insertIntoTexBox(self, txt):
+		self.latexBox.insertPlainText(txt)
+		
 	def fetchPreview(self):
 		#url = QUrl()
 		#urlQuery = QUrlQuery()
@@ -192,7 +205,7 @@ class MainDialog(QWidget):
 		try:
 			image = QImage()
 			obj = BytesIO();
-			sympy.preview('$$' + self.latexBox.toPlainText() + '$$', viewer='BytesIO', outputbuffer=obj, euler=False)
+			sympy.preview('\\[' + self.latexBox.toPlainText() + '\\]', viewer='BytesIO', outputbuffer=obj, euler=False)
 			obj.seek(0)
 			# sympy.preview('$$' + self.latexBox.toPlainText() + '$$', output="png", euler=False)
 			#url.setQuery(urlQuery)
@@ -204,10 +217,12 @@ class MainDialog(QWidget):
 				return
 			pixmap = QPixmap(QPixmap.fromImage(image))
 			self.outputLabel.setPixmap(pixmap)
-		except:
+		except Exception as e:
 			print("Invalid formula")
+			print(e)
+			
 			
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
-	ex = MainDialog()
+	ex = MainWidget()
 	sys.exit(app.exec_())
