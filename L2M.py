@@ -117,16 +117,19 @@ class MainWidget(QWidget):
 		self.confirm = QPushButton("Convert")
 		self.confirm.setToolTip("Convert LaTeX equation to MathML")
 		self.confirm.clicked.connect(self.confirmOnClick)
+		self.label = QLabel("Ready")
 		layout.addRow(self.confirm, self.clear)
+		layout.addRow(self.label)
 		self.formGroupBox.setLayout(layout)
 		
 	# @pyqtSlot
-	def confirmOnClick(self):
+	def confirmOnClick(self, supressMessages=False):
 		print("Converting LaTeX to MathML...")
 		latex = self.latexBox.toPlainText()
 		if latex == "":
 			print("Cannot convert empty string")
-			self.errorBox("Cannot convert empty string.", "You must type something.")
+			if not supressMessages:
+				self.errorBox("Cannot convert empty string.", "You must type something.")
 			return
 		try:
 			mathml = latex2mathml.converter.convert(latex)
@@ -136,7 +139,8 @@ class MainWidget(QWidget):
 		except Exception as e:
 			print("Some kind of error occurred:")
 			print(e)
-			self.errorBox("Some kind of error occurred", "Please use command line to see full stack trace for debugging")
+			if not supressMessages:
+				self.errorBox("Some kind of error occurred", "Please use command line to see full stack trace for debugging")
 			
 	def fracOnClick(self):
 		self.latexBox.insertPlainText("\\frac{}{}")
@@ -193,6 +197,7 @@ class MainWidget(QWidget):
 		self.latexBox.insertPlainText(txt)
 		
 	def fetchPreview(self):
+		self.label.setText("Generating Preview")
 		#url = QUrl()
 		#urlQuery = QUrlQuery()
 		#url.setPath("/cgi-bin/mathurl")
@@ -202,7 +207,7 @@ class MainWidget(QWidget):
                          #self.latexBox.toPlainText())))
 		#self.http.connectToHost("mathurl.com")
 		if self.liveUpdate.isChecked():
-			self.confirmOnClick()
+			self.confirmOnClick(True)
 		try:
 			image = QImage()
 			obj = BytesIO();
@@ -218,8 +223,10 @@ class MainWidget(QWidget):
 				return
 			pixmap = QPixmap(QPixmap.fromImage(image))
 			self.outputLabel.setPixmap(pixmap)
+			self.label.setText("Done generating preview")
 		except Exception as e:
 			print("Invalid formula")
+			self.label.setText("Invalid Formula")
 			if self.showtexoutput:
 				print(e)
 			
