@@ -9,59 +9,61 @@ from PyQt5.QtCore import pyqtSlot
 import sys
 import PyQt5
 
+import string
+
 import latex2mathml.converter
 
 sl = chr(92)
 
 symbols = {
-	'Α': "‌Alpha"
-	,'Β': "‌Beta"
-	,'Γ': "‌Gamma"
-	,'Δ': "‌Delta"
-	,'Ε': "‌Epsilon"
-	,'Ζ': "‌Zeta"
-	,'Η': "‌Eta"
-	,'Θ': "‌Theta"
-	,'Ι': "‌Iota"
-	,'Κ': "‌Kappa"
-	,'Λ': "‌Lambda"
-	,'Μ': "‌Mu"
-	,'Ν': "‌Nu"
-	,'Ξ': "‌Xi"
-	,'Ο': "‌Omicron"
-	,'Π': "‌Pi"
-	,'Ρ': "‌Rho"
-	,'Σ': "‌Sigma"
-	,'Τ': "‌Tau"
-	,'Υ': "‌Upsilon"
-	,'Φ': "‌Phi"
-	,'Χ': "‌Chi"
-	,'Ψ': "‌Psi"
-	,'Ω': "Omega"
-	,'α': "‌alpha"
-	,'β': "‌beta"
-	,'γ': "‌gamma"
-	,'δ': "‌delta"
-	,'ε': "‌epsilon"
-	,'ζ': "‌zeta"
-	,'η': "‌eta"
-	,'θ': "‌theta"
-	,'ι': "‌iota"
-	,'κ': "‌kappa"
-	,'λ': "‌lambda"
-	,'μ': "‌mu"
-	,'ν': "‌nu"
-	,'ξ': "‌xi"
-	,'ο': "‌omicron"
-	,'π': "‌pi"
-	,'ρ': "‌rho"
-	,'σ': "‌sigma"
-	,'τ': "‌tau"
-	,'υ': "‌upsilon"
-	,'φ': "‌phi"
-	,'χ': "‌chi"
-	,'ψ': "‌psi"
-	,'ω': "omega"
+	'Α': str("‌Alpha")
+	,'Β': str("‌Beta")
+	,'Γ': str("‌Gamma")
+	,'Δ': str("‌Delta")
+	,'Ε': str("‌Epsilon")
+	,'Ζ': str("‌Zeta")
+	,'Η': str("‌Eta")
+	,'Θ': str("‌Theta")
+	,'Ι': str("‌Iota")
+	,'Κ': str("‌Kappa")
+	,'Λ': str("‌Lambda")
+	,'Μ': str("‌Mu")
+	,'Ν': str("‌Nu")
+	,'Ξ': str("‌Xi")
+	,'Ο': str("‌Omicron")
+	,'Π': str("‌Pi")
+	,'Ρ': str("‌Rho")
+	,'Σ': str("‌Sigma")
+	,'Τ': str("‌Tau")
+	,'Υ': str("‌Upsilon")
+	,'Φ': str("‌Phi")
+	,'Χ': str("‌Chi")
+	,'Ψ': str("‌Psi")
+	,'Ω': str("Omega")
+	,'α': str("‌alpha")
+	,'β': str("‌beta")
+	,'γ': str("‌gamma")
+	,'δ': str("‌delta")
+	,'ε': str("‌epsilon")
+	,'ζ': str("‌zeta")
+	,'η': str("‌eta")
+	,'θ': str("‌theta")
+	,'ι': str("‌iota")
+	,'κ': str("‌kappa")
+	,'λ': str("‌lambda")
+	,'μ': str("‌mu")
+	,'ν': str("‌nu")
+	,'ξ': str("‌xi")
+	,'ο': str("‌omicron")
+	,'π': str("‌pi")
+	,'ρ': str("‌rho")
+	,'σ': str("‌sigma")
+	,'τ': str("‌tau")
+	,'υ': str("‌upsilon")
+	,'φ': str("‌phi")
+	,'χ': str("‌chi")
+	,'ψ': str("‌psi")
+	,'ω': str("omega")
 }
 
 class More(QWidget):
@@ -92,5 +94,11 @@ class More(QWidget):
 		
 	def addText(self, txt):
 		#txt.replace(u'\x80\x8c', '\\')
-		self.parent.insertIntoTexBox(sl + txt + ' ')
+		# Remove zero width non joiner character
+		t = str(sl + txt[1:] + ' ')
+		if ascii(txt) != "'" + txt + "'":
+			print("[WARNING]: Undefined unicode crap in the text to insert")
+			print("Got: " + ascii(txt) + " instead of " + str(txt))
+			print("Removed zero width non joiner")
+		self.parent.insertIntoTexBox(t)
 		#self.parent.fetchPreview()
