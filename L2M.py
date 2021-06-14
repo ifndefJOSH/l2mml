@@ -30,6 +30,7 @@ class MainWidget(QWidget):
 	
 	def __init__(self):
 		super().__init__()
+		self.showtexoutput = False
 		# self.parent = parent
 		self.title = "LaTeX to MathML Converter (GUI)"
 		self.left = 10
@@ -219,10 +220,13 @@ class MainWidget(QWidget):
 			self.outputLabel.setPixmap(pixmap)
 		except Exception as e:
 			print("Invalid formula")
-			print(e)
+			if self.showtexoutput:
+				print(e)
 			
 			
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	ex = MainWidget()
+	if "--showlatexoutput" in sys.argv:
+		ex.showtexoutput = True
 	sys.exit(app.exec_())
