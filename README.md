@@ -5,4 +5,30 @@ Not affiliated with the developers of latex2mathml or sympy
 
 ## Command line arguments
 
-Currently the only command line argument is `--showlatexoutput`, which shows the output of the `pdfLaTeX` executable when previews are built. Default is `False`
+There are two command line arguments:
+
+1. `--showlatexoutput`, which shows the output of the `pdfLaTeX` executable when previews are built. Default is `False`
+2. `--forceWin`, which if on Linux or Mac, forces the Windows-specific no-live-preview interface.
+
+## Live preview
+
+Thanks to sympy. Is not supported on Windows (well, it's just *super* slow for some reason).
+
+## Installation:
+
+### Linux and MacOS
+
+Make sure you have `pip` and `python` (v3.8+), and run the following commands in the code directory:
+```
+pip install pyqt5 sympy latex2mathml pyinstaller
+chmod +x build.sh
+./build.sh
+```
+
+### Windows
+
+Again, make sure `pip` and `python` (v3.8+) are installed, and run the following commands:
+```
+pip install pyqt5 sympy latex2mathml pyinstaller
+pyinstaller L2M.py
+```
