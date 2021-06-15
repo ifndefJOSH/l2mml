@@ -26,11 +26,16 @@ import latex2mathml.converter
 
 from More import More
 
+# import threading
+# import time
+import platform
+
 class MainWidget(QWidget):
 	
-	def __init__(self):
+	def __init__(self, forceWin=False):
 		super().__init__()
 		self.showtexoutput = False
+		self.onWindows = (platform.system() == "Windows") or forceWin
 		# self.parent = parent
 		self.title = "LaTeX to MathML Converter (GUI)"
 		self.left = 10
@@ -58,7 +63,10 @@ class MainWidget(QWidget):
 		self.clear.clicked.connect(self.clearOnClick)
 		layout.addRow(QLabel("LaTeX Equation:"))
 		self.latexBox = QPlainTextEdit(self)
-		self.latexBox.textChanged.connect(self.fetchPreview)
+		if not self.onWindows:
+			self.latexBox.textChanged.connect(self.fetchPreview)
+		else:
+			print("Live preview not supported on Windows since it freezes the UI. Giving you a preview button instead.")
 		layout.addRow(self.latexBox)
 		# Create buttons for adding certain things to the LaTeX:
 		grid = QGridLayout()
@@ -113,7 +121,12 @@ class MainWidget(QWidget):
 		layout.addRow(QLabel("MathML Output:"))
 		self.mathMLBox = QPlainTextEdit(self)
 		layout.addRow(self.mathMLBox)
-		layout.addRow(self.liveUpdate)
+		if self.onWindows:
+			self.previewButton = QPushButton("Preview Equation")
+			self.previewButton.clicked.connect(self.fetchPreview)
+			layout.addRow(self.previewButton) # , self.liveUpdate)
+		else:	
+			layout.addRow(self.liveUpdate)
 		self.confirm = QPushButton("Convert")
 		self.confirm.setToolTip("Convert LaTeX equation to MathML")
 		self.confirm.clicked.connect(self.confirmOnClick)
@@ -196,6 +209,16 @@ class MainWidget(QWidget):
 	def insertIntoTexBox(self, txt):
 		self.latexBox.insertPlainText(txt)
 		
+	#def waitAndFetchPreview(self):
+		#if self.helper.is_alive():
+			#self.restartThread = False
+			#self.helper.join()
+			#time.sleep(0.5)
+		#time.sleep(1) # Give some time before we retrigger.
+		#self.helper.start()
+		#self.restartThread = True
+		
+		
 	def fetchPreview(self):
 		self.label.setText("Generating Preview")
 		#url = QUrl()
@@ -204,7 +227,7 @@ class MainWidget(QWidget):
 		#urlQuery.setQueryDelimiters("=", ";")
 		#urlQuery.addQueryItem("D", "3")
 		#urlQuery.addQueryItem("tex", str(QUrl.toPercentEncoding(
-                         #self.latexBox.toPlainText())))
+						#self.latexBox.toPlainText())))
 		#self.http.connectToHost("mathurl.com")
 		if self.liveUpdate.isChecked():
 			self.confirmOnClick(True)
@@ -233,7 +256,8 @@ class MainWidget(QWidget):
 			
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
-	ex = MainWidget()
+	fw = "--forceWin" in sys.argv
+	ex = MainWidget(fw)
 	if "--showlatexoutput" in sys.argv:
 		ex.showtexoutput = True
 	sys.exit(app.exec_())
