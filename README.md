@@ -5,10 +5,11 @@ Not affiliated with the developers of latex2mathml or sympy
 
 ## Command line arguments
 
-There are two command line arguments:
+There are three command line arguments:
 
 1. `--showlatexoutput`, which shows the output of the `pdfLaTeX` executable when previews are built. Default is `False`
 2. `--forceWin`, which if on Linux or Mac, forces the Windows-specific no-live-preview interface.
+3. `--forcePosix`, which forces the Linux/MacOS specific interface with live preview allowed.
 
 ## Live preview
 
