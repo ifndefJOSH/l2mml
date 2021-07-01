@@ -33,3 +33,10 @@ Again, make sure `pip` and `python` (v3.8+) are installed, and run the following
 pip install pyqt5 sympy latex2mathml pyinstaller
 pyinstaller L2M.py
 ```
+
+## Screenshots
+
+[l2m in light mode](screenshot.png)
+[l2m in dark mode](screenshot.png)
+
+Note that L2M follows the system theme because it literally just uses Qt's rendering engine. To switch to dark mode (on Linux at least) set your system to dark mode.
